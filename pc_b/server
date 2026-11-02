@@ -1,0 +1,26 @@
+#!/bin/python
+import base64
+
+from scapy.all import sniff, ICMP, Raw, checksum
+
+def chksum_test(pkt):
+    empfangen = pkt[ICMP].chksum
+    raw = bytes(pkt[ICMP])
+    genullt = raw[:2] + b"\x00\x00" + raw[4:]
+    return checksum(genullt) == empfangen
+
+
+    
+def checker(pkt):
+    if not (pkt.haslayer(ICMP) and pkt[ICMP].type == 8 and pkt.haslayer(Raw)):
+        return
+    if not chksum_test(pkt):
+        return print("checksumme falsch")
+    daten = base64.b64decode(bytes(pkt[Raw].load))
+    daten = daten.decode("utf-8")
+    with open("sniffed.txt", "a", encoding="utf-8") as f:
+        f.write(daten)
+
+sniff(iface="lo",filter="icmp", prn=checker, store=0)
+
+
