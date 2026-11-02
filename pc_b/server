@@ -21,6 +21,6 @@ def checker(pkt):
     with open("sniffed.txt", "a", encoding="utf-8") as f:
         f.write(daten)
 
-sniff(iface="lo",filter="icmp", prn=checker, store=0)
+sniff(filter="icmp", prn=checker, store=0)
 
 
