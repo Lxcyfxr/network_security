@@ -1,7 +1,13 @@
-#!/bin/python
+#!/bin/python3
 import base64
-
 from scapy.all import sniff, ICMP, Raw, checksum
+import os
+import sys
+ident = 0x4242
+buffer = {}
+
+if os.geteuid() != 0:
+    sys.exit("Bitte mit sudo starten.")
 
 def chksum_test(pkt):
     empfangen = pkt[ICMP].chksum
@@ -12,15 +18,23 @@ def chksum_test(pkt):
 
     
 def checker(pkt):
-    if not (pkt.haslayer(ICMP) and pkt[ICMP].type == 8 and pkt.haslayer(Raw)):
+    if not (pkt.haslayer(ICMP) and pkt.haslayer(Raw)):
+        return
+    icmp = pkt[ICMP]
+    if icmp.id != ident or icmp.type !=8:
         return
     if not chksum_test(pkt):
-        return print("checksumme falsch")
-    daten = base64.b64decode(bytes(pkt[Raw].load))
-    daten = daten.decode("utf-8")
-    with open("sniffed.txt", "a", encoding="utf-8") as f:
-        f.write(daten)
+        return print(f"checksumme falsch for {icmp.seq}")
+    if icmp.seq == 0 and pkt[Raw].load == b"__END__":
+        daten = b"".join(buffer[k] for k in sorted(buffer))
+        daten = base64.b64decode(daten).decode("utf-8")
+        with open("sniffed.txt", "a", encoding="utf-8") as f:
+            f.write(daten)
+    else:
+        buffer[icmp.seq] = bytes(pkt[Raw].load)
 
+
+print("Sniffer läuft:")
 sniff(filter="icmp", prn=checker, store=0)
 
 
