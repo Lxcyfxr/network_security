@@ -35,6 +35,6 @@ def checker(pkt):
 
 
 print("Sniffer läuft:")
-sniff(iface = "lo",filter="icmp", prn=checker, store=0)
+sniff(filter="icmp", prn=checker, store=0)
 
 
