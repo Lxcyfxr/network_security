@@ -1,10 +1,11 @@
 #!/bin/python3
 import base64
-from scapy.all import sniff, ICMP, Raw, checksum, IP
+from scapy.all import sniff, ICMP, Raw, checksum, IP, PcapWriter
 import os
 import sys
 ident = 0x4242
 buffer = {}
+writer = PcapWriter("server.pcap",append = True, sync = True)
 
 if os.geteuid() != 0:
     sys.exit("Bitte mit sudo starten.")
@@ -37,8 +38,14 @@ def checker(pkt):
     else:
         buffer[icmp.seq] = bytes(pkt[Raw].load)
 
+def handle(pkt):
+    writer.write(pkt)
+    checker()
+
 
 print("Sniffer läuft:")
-sniff(filter="icmp", prn=checker, store=0)
-
-
+#sniff(filter="icmp", prn=checker, store=0)
+try:
+    sniff(prn=handle, store=0)
+finally:
+    writer.close()
