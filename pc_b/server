@@ -1,6 +1,6 @@
 #!/bin/python3
 import base64
-from scapy.all import sniff, ICMP, Raw, checksum
+from scapy.all import sniff, ICMP, Raw, checksum, IP
 import os
 import sys
 ident = 0x4242
@@ -11,7 +11,8 @@ if os.geteuid() != 0:
 
 def chksum_test(pkt):
     empfangen = pkt[ICMP].chksum
-    raw = bytes(pkt[ICMP])
+    icmp_len = pkt[IP].len - pkt[IP].ihl * 4
+    raw = bytes(pkt[ICMP])[:icmp_len]
     genullt = raw[:2] + b"\x00\x00" + raw[4:]
     return checksum(genullt) == empfangen
 
