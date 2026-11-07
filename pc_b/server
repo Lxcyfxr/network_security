@@ -40,7 +40,7 @@ def checker(pkt):
 
 def handle(pkt):
     writer.write(pkt)
-    checker()
+    checker(pkt)
 
 
 print("Sniffer läuft:")
