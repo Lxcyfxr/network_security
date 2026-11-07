@@ -25,7 +25,7 @@ def checker(pkt):
         return
     if not chksum_test(pkt):
         return print(f"checksumme falsch for {icmp.seq}")
-    if icmp.seq == 0 and pkt[Raw].load == b"__END__":
+    if icmp.seq == 0:
         daten = b"".join(buffer[k] for k in sorted(buffer))
         daten = base64.b64decode(daten).decode("utf-8")
         with open("sniffed.txt", "a", encoding="utf-8") as f:
@@ -35,6 +35,6 @@ def checker(pkt):
 
 
 print("Sniffer läuft:")
-sniff(filter="icmp", prn=checker, store=0)
+sniff(iface = "lo",filter="icmp", prn=checker, store=0)
 
 
