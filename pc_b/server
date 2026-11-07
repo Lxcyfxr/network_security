@@ -46,6 +46,6 @@ def handle(pkt):
 print("Sniffer läuft:")
 #sniff(filter="icmp", prn=checker, store=0)
 try:
-    sniff(prn=handle, store=0)
+    sniff(iface="enp0s8",prn=handle, store=0)
 finally:
     writer.close()
