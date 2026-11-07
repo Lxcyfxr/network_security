@@ -22,11 +22,13 @@ def checker(pkt):
     if not (pkt.haslayer(ICMP) and pkt.haslayer(Raw)):
         return
     icmp = pkt[ICMP]
+    print("GESEHEN type", icmp.type, "id", hex(icmp.id), "seq", icmp.seq)
     if icmp.id != ident or icmp.type !=8:
-        return
+        return print("filter verworfen")
     if not chksum_test(pkt):
         return print(f"checksumme falsch for {icmp.seq}")
     if icmp.seq == 0:
+        print("ende erreciht",sorted(buffer))
         daten = b"".join(buffer[k] for k in sorted(buffer))
         daten = base64.b64decode(daten).decode("utf-8")
         with open("sniffed.txt", "a", encoding="utf-8") as f:
