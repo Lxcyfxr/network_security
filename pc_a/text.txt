@@ -27,8 +27,6 @@ angedrohte Strafe.
 Erfüllung rechtmäßiger dienstlicher oder beruflicher Pflichten
 dienen. Dazu gehören insbesondere
 1.
-Prüfungsleistung Network Security Seite 3
-Version 4.2 – TINF 24CS2 - M. Eppler 29.08.2026
 solche Handlungen von Amtsträgern oder deren Beauftragten, mit
 denen Daten ausschließlich der Verwertung in einem
 Besteuerungsverfahren, einem Strafverfahren oder einem

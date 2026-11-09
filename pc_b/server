@@ -32,6 +32,7 @@ def checker(pkt):
         print("ende erreciht",sorted(buffer))
         daten = b"".join(buffer[k] for k in sorted(buffer))
         daten = base64.b64decode(daten).decode("utf-8")
+        print(daten)
         with open("sniffed.txt", "a", encoding="utf-8") as f:
             f.write(daten)
         return print("Data caputured")
